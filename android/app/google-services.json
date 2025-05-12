@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "947697186275",
+    "project_id": "notebook-c06be",
+    "storage_bucket": "notebook-c06be.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:947697186275:android:fbad5c2158cbd94947dcd6",
+        "android_client_info": {
+          "package_name": "com.example.notebook"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCDjkk7gEL6CJVhU_abYvM0siQ5-XN1olk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
