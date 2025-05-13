@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
+import 'package:notebook/core/app_colors.dart';
 
 import '../model/note_model.dart';
 import '../pages/ultils/Uitilities.dart';
@@ -20,6 +21,7 @@ class NoteController extends GetxController {
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
   final searchController = TextEditingController();
+  final Utils utils = Utils();
 
   FirebaseFirestore fireStore = FirebaseFirestore.instance;
 
@@ -62,7 +64,7 @@ class NoteController extends GetxController {
         noteBox.put(note.id, note);
       }
     } catch (e) {
-      Utils().toastMessage(e.toString());
+      utils.toastMessage(message: e.toString());
     } finally {
       isLoading.value = false;
     }
@@ -89,32 +91,45 @@ class NoteController extends GetxController {
 
   // update notes in fireStore and Hive
   void updateNote(Note note) {
-    fireStore.collection(userId).doc(note.id).update({
-      'title': note.title,
-      'description': note.description,
-    }).then((value) {
-      titleController.clear();
-      descriptionController.clear();
+    fireStore
+        .collection(userId)
+        .doc(note.id)
+        .update({'title': note.title, 'description': note.description})
+        .then((value) {
+          titleController.clear();
+          descriptionController.clear();
 
-      //update in Hive
-      noteBox.put(note.id, note);
-      fetchNotes();
-      Utils().toastMessage('Note updated successfully');
-    }).catchError((error) {
-      Utils().toastMessage('Failed to update note: $error');
-    });
+          //update in Hive
+          noteBox.put(note.id, note);
+          fetchNotes();
+          utils.toastMessage(
+            message: 'Note updated successfully',
+            color: greenColor,
+          );
+        })
+        .catchError((error) {
+          utils.toastMessage(message: 'Failed to update note: $error');
+        });
   }
 
   // delete notes by its ID
   void deleteNote(String noteId) {
-    fireStore.collection(userId).doc(noteId).delete().then((value) {
-      //delete from hive
-      noteBox.delete(noteId);
-      fetchNotes();
-      Utils().toastMessage('Note Delete successfully');
-    }).catchError((error) {
-      Utils().toastMessage('Failed to Delete note: $error');
-    });
+    fireStore
+        .collection(userId)
+        .doc(noteId)
+        .delete()
+        .then((value) {
+          //delete from hive
+          noteBox.delete(noteId);
+          fetchNotes();
+          Utils().toastMessage(
+            message: 'Note Delete successfully',
+            color: greenColor,
+          );
+        })
+        .catchError((error) {
+          utils.toastMessage(message: 'Failed to Delete note: $error');
+        });
   }
 
   // filter notes by title
@@ -122,10 +137,13 @@ class NoteController extends GetxController {
     if (query.isEmpty) {
       filterNoteList.value = noteList;
     } else {
-      filterNoteList.value = noteList
-          .where(
-              (note) => note.title.toLowerCase().contains(query.toLowerCase()))
-          .toList();
+      filterNoteList.value =
+          noteList
+              .where(
+                (note) =>
+                    note.title.toLowerCase().contains(query.toLowerCase()),
+              )
+              .toList();
     }
   }
 
@@ -147,7 +165,7 @@ class NoteController extends GetxController {
     searchNotes(query);
   }
 
-// clear search bar
+  // clear search bar
   void clearSearchQuery() {
     searchController.clear();
     updateSearchQuery('');

@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:notebook/core/app_colors.dart';
 
 import '../../pages/ultils/Uitilities.dart';
 
@@ -12,6 +13,7 @@ class LoginController extends GetxController {
   final passwordControllers = TextEditingController();
   GlobalKey<FormState> formKeys = GlobalKey<FormState>();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final Utils utils = Utils();
 
   RxBool toggle = true.obs;
   RxBool loading = false.obs;
@@ -34,23 +36,23 @@ class LoginController extends GetxController {
           )
           .then((value) {
             if (!context.mounted) return;
-            Utils().toastMessage('Login Successfully');
+            utils.toastMessage(message:'Login Successfully',color: greenColor);
             setLoading(false);
             context.go('/homePage');
           })
           .onError((error, stackTrace) {
             setLoading(false);
-            Utils().toastMessage(error.toString());
+            utils.toastMessage(message:error.toString());
           });
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        Utils().toastMessage('No user found for that email.');
+        utils.toastMessage(message:'No user found for that email.');
       } else if (e.code == 'wrong-password') {
-        Utils().toastMessage('Wrong password provided for that user.');
+        utils.toastMessage(message: 'Wrong password provided for that user.');
         setLoading(false);
       }
     } catch (e) {
-      Utils().toastMessage(e.toString());
+      utils.toastMessage(message: e.toString());
       setLoading(false);
     }
   }

@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import '../../core/app_colors.dart';
 import '../../pages/ultils/Uitilities.dart';
 
 class SignUpController extends GetxController {
@@ -12,6 +13,7 @@ class SignUpController extends GetxController {
   final nameController = TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final Utils utils = Utils();
 
   RxBool toggle = true.obs;
   RxBool loading = false.obs;
@@ -34,28 +36,31 @@ class SignUpController extends GetxController {
           )
           .then((value) {
             if (!context.mounted) return;
-            Utils().toastMessage('SignUp Successfully');
+            utils.toastMessage(
+              message: 'SignUp Successfully',
+              color: greenColor,
+            );
             setLoading(false);
             context.go('/homePage');
           })
           .onError((error, stackTrace) {
             setLoading(false);
-            Utils().toastMessage(error.toString());
+            utils.toastMessage(message: error.toString());
           });
     } on FirebaseAuthException catch (e) {
       if (!context.mounted) return;
       if (e.code == 'weak-password') {
-        Utils().toastMessage('password should be atleast 6 character');
+        utils.toastMessage(message: 'password should be atleast 6 character');
       } else if (e.code == 'email-already-in-use') {
-        Utils().toastMessage(
-          'The account already exists for that email,please login now',
+        utils.toastMessage(
+          message: 'The account already exists for that email,please login now',
         );
         setLoading(false);
         context.go('/login');
       }
     } catch (e) {
       print(e);
-      Utils().toastMessage(e.toString());
+      utils.toastMessage(message: e.toString());
       setLoading(false);
     }
   }

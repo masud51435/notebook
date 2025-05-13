@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:notebook/core/app_colors.dart';
 
 import '../../../common/common_button.dart';
 import '../../../common/custom_appbar.dart';
@@ -12,6 +13,7 @@ class AddNotePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final NoteController addNotesController = NoteController.instance;
+    final Utils utils = Utils();
     return Scaffold(
       appBar: const CustomAppBar(title: 'Add Note'),
       body: SingleChildScrollView(
@@ -50,11 +52,14 @@ class AddNotePage extends StatelessWidget {
                 // Check if title or description is empty
                 if (addNotesController.titleController.text.isEmpty ||
                     addNotesController.descriptionController.text.isEmpty) {
-                  Utils().toastMessage('Please fill in all fields');
+                  utils.toastMessage(message: 'Please fill in all fields');
                 } else {
                   addNotesController.addNote();
                   context.pop();
-                  Utils().toastMessage('Note added successfully');
+                  utils.toastMessage(
+                    message: 'Note added successfully',
+                    color: greenColor,
+                  );
                 }
               },
               text: 'Save Note',
